@@ -21,7 +21,7 @@ const Home = () => {
   const getNome = async () => {
     // SETAR UMA LISTA DE USUÁ RIOS
     setLoading(false);
-    const usuariosRef = ref(db, 'usuarios');
+    const usuariosRef = ref(db, 'employees');
     const usuariosArray = [];
 
     onValue(usuariosRef, snapshot => {
@@ -44,9 +44,9 @@ const Home = () => {
 
   const cadastrar = async () => {
     if (nome !== '' && cargo !== '') {
-      const novoUsuarioRef = push(ref(db, 'usuarios'));
+      const novoUsuarioRef = push(ref(db, 'employees'));
       const novoUsuarioKey = novoUsuarioRef.key;
-      await set(ref(db, `usuarios/${novoUsuarioKey}`), {
+      await set(ref(db, `employees/${novoUsuarioKey}`), {
         nome: nome,
         cargo: cargo,
       });

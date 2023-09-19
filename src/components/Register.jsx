@@ -3,10 +3,15 @@ import {React, useState} from 'react';
 import {TextInput} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
 import {createUserWithEmailAndPassword, getAuth} from 'firebase/auth';
+import {getDatabase, ref, set} from 'firebase/database';
+import appi from './ApiConfig';
 
 const Register = () => {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const db = getDatabase();
 
   const navigate = useNavigation();
   const toLogin = () => {
@@ -17,8 +22,11 @@ const Register = () => {
     const auth = getAuth();
     createUserWithEmailAndPassword(auth, email, password)
       .then(userCredential => {
-        const user = userCredential.user.email;
-        alert(`Usuario: ${user}, cadastrado com sucesso!`);
+        const userId = userCredential.user.uid;
+        set(ref(db, `users/${userId}`), {
+          nome: name,
+        });
+        alert(`Usuario: ${userId}, cadastrado com sucesso!`);
         navigate.navigate('Login');
       })
       .catch(error => {
@@ -32,6 +40,13 @@ const Register = () => {
     <View style={styles.container}>
       <View style={styles.loginArea}>
         <Text style={styles.registerTitle}>Create your account</Text>
+
+        <TextInput
+          value={name}
+          onChangeText={text => setName(text)}
+          placeholder="Name"
+          style={styles.input}
+        />
         <TextInput
           value={email}
           onChangeText={text => setEmail(text)}
